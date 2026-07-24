@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<!-- saved from url=(0063)file:///Users/raffaellavitale/Desktop/travasi_vino/travasi.html -->
+<html lang="it"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Travasi di vino</title>
+<style>
+  :root { --bianco:#e8d9a0; --rosso:#7b1230; --carta:#faf7f0; --inch:#2b2118; }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:24px; background:var(--carta); color:var(--inch);
+         font-family:Georgia,"Times New Roman",serif; }
+  .wrap { max-width:980px; margin:0 auto; }
+  h1 { font-size:26px; margin:0 0 4px; font-weight:normal; }
+  .sub { font-size:14px; opacity:.65; margin-bottom:22px; }
+  .pannello { display:flex; flex-wrap:wrap; gap:14px; align-items:center;
+              padding:14px 16px; margin-bottom:22px; background:#fff;
+              border:1px solid #e0d8c8; border-radius:6px; }
+  button { font-family:inherit; font-size:14px; padding:8px 18px; cursor:pointer;
+           border:1px solid var(--inch); border-radius:4px;
+           background:var(--inch); color:var(--carta); }
+  button.ghost { background:transparent; color:var(--inch); }
+  button:hover { opacity:.78; }
+  .campo { display:flex; flex-direction:column; gap:4px; }
+  .campo label { font-size:11px; text-transform:uppercase; letter-spacing:.8px; opacity:.6; }
+  .campo input { width:90px; padding:6px 8px; font-family:inherit; font-size:15px;
+                 border:1px solid #d5cbb8; border-radius:4px; background:var(--carta); }
+  .scena { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:8px; }
+  .stato { text-align:center; font-size:15px; min-height:24px; margin-bottom:18px; }
+  .numeri { display:grid; grid-template-columns:1fr 1fr; gap:16px;
+            margin:0 auto 26px; max-width:620px; }
+  .scheda { background:#fff; border:1px solid #e0d8c8; border-radius:6px; padding:12px 14px; }
+  .scheda h3 { margin:0 0 8px; font-size:13px; text-transform:uppercase;
+               letter-spacing:1px; font-weight:normal; opacity:.6; }
+  .riga { display:flex; justify-content:space-between; font-size:15px; padding:3px 0; }
+  .riga b { font-variant-numeric:tabular-nums; font-weight:normal; }
+  .barra { height:8px; border-radius:4px; overflow:hidden; display:flex; margin-top:9px; }
+  .barra i { display:block; height:100%; transition:width .45s ease; }
+  canvas { display:block; width:100%; max-width:900px; margin:0 auto; background:#fff;
+           border:1px solid #e0d8c8; border-radius:6px; }
+  .nota { font-size:12.5px; opacity:.6; text-align:center; margin-top:12px; line-height:1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Travasi tra due damigiane</h1>
+  <div class="sub">Il mestolo preleva sempre in proporzione alla miscela presente, mai vino puro dopo il primo giro.</div>
+
+  <div class="pannello">
+    <button id="btnPlay">Avvia</button>
+    <button id="btnStep" class="ghost">Passo</button>
+    <button id="btnReset" class="ghost">Reset</button>
+    <div class="campo"><label>Velocita (ms)</label><input id="velocita" type="number" value="700" min="80" step="50"></div>
+    <div class="campo"><label>Parametri</label><span style="font-size:14px;padding-top:4px">20 L per damigiana, mestolo da 1 L, 20 cicli</span></div>
+  </div>
+
+  <div class="scena">
+    <svg id="damA" width="200" height="260" viewBox="0 0 200 260"><defs><clippath id="cpdamA"><path d="M70,55 L70,95 Q40,115 40,160 L40,215 Q40,228 55,228 L145,228 Q160,228 160,215 L160,160 Q160,115 130,95 L130,55 Z"></path></clippath></defs><path d="M70,40 L70,95 Q40,115 40,160 L40,215 Q40,228 55,228 L145,228 Q160,228 160,215 L160,160 Q160,115 130,95 L130,40 Z" fill="rgba(255,255,255,.55)" stroke="#b9ae99" stroke-width="2"></path><g clip-path="url(#cpdamA)"><rect x="30" y="95" width="140" height="136" fill="rgb(232,217,160)"></rect><ellipse cx="100" cy="95" rx="70" ry="5" fill="rgb(232,217,160)" opacity=".75"></ellipse></g><path d="M78,60 L78,100 Q52,118 52,158 L52,210" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="4" stroke-linecap="round"></path><rect x="66" y="30" width="68" height="14" rx="4" fill="#8a7a5e"></rect><text x="100" y="252" text-anchor="middle" font-family="Georgia,serif" font-size="14" fill="#2b2118">Damigiana A</text></svg>
+    <svg id="freccia" width="150" height="260" viewBox="0 0 150 260"></svg>
+    <svg id="damB" width="200" height="260" viewBox="0 0 200 260"><defs><clippath id="cpdamB"><path d="M70,55 L70,95 Q40,115 40,160 L40,215 Q40,228 55,228 L145,228 Q160,228 160,215 L160,160 Q160,115 130,95 L130,55 Z"></path></clippath></defs><path d="M70,40 L70,95 Q40,115 40,160 L40,215 Q40,228 55,228 L145,228 Q160,228 160,215 L160,160 Q160,115 130,95 L130,40 Z" fill="rgba(255,255,255,.55)" stroke="#b9ae99" stroke-width="2"></path><g clip-path="url(#cpdamB)"><rect x="30" y="95" width="140" height="136" fill="rgb(123,18,48)"></rect><ellipse cx="100" cy="95" rx="70" ry="5" fill="rgb(123,18,48)" opacity=".75"></ellipse></g><path d="M78,60 L78,100 Q52,118 52,158 L52,210" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="4" stroke-linecap="round"></path><rect x="66" y="30" width="68" height="14" rx="4" fill="#8a7a5e"></rect><text x="100" y="252" text-anchor="middle" font-family="Georgia,serif" font-size="14" fill="#2b2118">Damigiana B</text></svg>
+  </div>
+
+  <div class="stato" id="stato">Situazione iniziale</div>
+
+  <div class="numeri">
+    <div class="scheda">
+      <h3>Damigiana A</h3>
+      <div class="riga"><span>Bianco</span><b id="aB">20,0000 L</b></div>
+      <div class="riga"><span>Rosso</span><b id="aR">0,0000 L</b></div>
+      <div class="riga"><span>Totale</span><b id="aT">20,0000 L</b></div>
+      <div class="barra"><i id="barAB" style="background: var(--bianco); width: 100%;"></i><i id="barAR" style="background: var(--rosso); width: 0%;"></i></div>
+    </div>
+    <div class="scheda">
+      <h3>Damigiana B</h3>
+      <div class="riga"><span>Bianco</span><b id="bB">0,0000 L</b></div>
+      <div class="riga"><span>Rosso</span><b id="bR">20,0000 L</b></div>
+      <div class="riga"><span>Totale</span><b id="bT">20,0000 L</b></div>
+      <div class="barra"><i id="barBB" style="background: var(--bianco); width: 0%;"></i><i id="barBR" style="background: var(--rosso); width: 100%;"></i></div>
+    </div>
+  </div>
+
+  <canvas id="grafico" width="900" height="260"></canvas>
+
+
+</div>
+
+<script>
+var STATI = [{"ciclo": 0, "fase": "iniziale", "etichetta": "Situazione iniziale", "A": {"bianco": 20.0, "rosso": 0.0}, "B": {"bianco": 0.0, "rosso": 20.0}}, {"ciclo": 1, "fase": "a", "etichetta": "Ciclo 1 a) mestolo da A verso B", "A": {"bianco": 19.0, "rosso": 0.0}, "B": {"bianco": 1.0, "rosso": 20.0}}, {"ciclo": 1, "fase": "b", "etichetta": "Ciclo 1 b) mestolo da B verso A", "A": {"bianco": 19.047619047619047, "rosso": 0.9523809523809523}, "B": {"bianco": 0.9523809523809523, "rosso": 19.047619047619047}}, {"ciclo": 2, "fase": "a", "etichetta": "Ciclo 2 a) mestolo da A verso B", "A": {"bianco": 18.095238095238095, "rosso": 0.9047619047619047}, "B": {"bianco": 1.9047619047619047, "rosso": 19.095238095238095}}, {"ciclo": 2, "fase": "b", "etichetta": "Ciclo 2 b) mestolo da B verso A", "A": {"bianco": 18.1859410430839, "rosso": 1.8140589569160996}, "B": {"bianco": 1.8140589569160996, "rosso": 18.1859410430839}}, {"ciclo": 3, "fase": "a", "etichetta": "Ciclo 3 a) mestolo da A verso B", "A": {"bianco": 17.276643990929706, "rosso": 1.7233560090702946}, "B": {"bianco": 2.7233560090702946, "rosso": 18.276643990929706}}, {"ciclo": 3, "fase": "b", "etichetta": "Ciclo 3 b) mestolo da B verso A", "A": {"bianco": 17.406327610409242, "rosso": 2.5936723895907567}, "B": {"bianco": 2.5936723895907567, "rosso": 17.406327610409242}}, {"ciclo": 4, "fase": "a", "etichetta": "Ciclo 4 a) mestolo da A verso B", "A": {"bianco": 16.53601122988878, "rosso": 2.463988770111219}, "B": {"bianco": 3.463988770111219, "rosso": 17.53601122988878}}, {"ciclo": 4, "fase": "b", "etichetta": "Ciclo 4 b) mestolo da B verso A", "A": {"bianco": 16.70096307608455, "rosso": 3.2990369239154465}, "B": {"bianco": 3.2990369239154465, "rosso": 16.70096307608455}}, {"ciclo": 5, "fase": "a", "etichetta": "Ciclo 5 a) mestolo da A verso B", "A": {"bianco": 15.865914922280325, "rosso": 3.134085077719674}, "B": {"bianco": 4.134085077719674, "rosso": 16.865914922280325}}, {"ciclo": 5, "fase": "b", "etichetta": "Ciclo 5 b) mestolo da B verso A", "A": {"bianco": 16.062776116457453, "rosso": 3.9372238835425466}, "B": {"bianco": 3.9372238835425466, "rosso": 16.062776116457453}}, {"ciclo": 6, "fase": "a", "etichetta": "Ciclo 6 a) mestolo da A verso B", "A": {"bianco": 15.25963731063458, "rosso": 3.740362689365419}, "B": {"bianco": 4.740362689365419, "rosso": 16.25963731063458}}, {"ciclo": 6, "fase": "b", "etichetta": "Ciclo 6 b) mestolo da B verso A", "A": {"bianco": 15.48536886727103, "rosso": 4.5146311327289705}, "B": {"bianco": 4.5146311327289705, "rosso": 15.48536886727103}}, {"ciclo": 7, "fase": "a", "etichetta": "Ciclo 7 a) mestolo da A verso B", "A": {"bianco": 14.711100423907478, "rosso": 4.288899576092522}, "B": {"bianco": 5.288899576092522, "rosso": 15.711100423907478}}, {"ciclo": 7, "fase": "b", "etichetta": "Ciclo 7 b) mestolo da B verso A", "A": {"bianco": 14.962952784673789, "rosso": 5.037047215326211}, "B": {"bianco": 5.037047215326211, "rosso": 14.962952784673789}}, {"ciclo": 8, "fase": "a", "etichetta": "Ciclo 8 a) mestolo da A verso B", "A": {"bianco": 14.2148051454401, "rosso": 4.785194854559901}, "B": {"bianco": 5.785194854559901, "rosso": 15.2148051454401}}, {"ciclo": 8, "fase": "b", "etichetta": "Ciclo 8 b) mestolo da B verso A", "A": {"bianco": 14.490290614704856, "rosso": 5.509709385295143}, "B": {"bianco": 5.509709385295143, "rosso": 14.490290614704856}}, {"ciclo": 9, "fase": "a", "etichetta": "Ciclo 9 a) mestolo da A verso B", "A": {"bianco": 13.765776083969612, "rosso": 5.234223916030386}, "B": {"bianco": 6.234223916030386, "rosso": 14.765776083969612}}, {"ciclo": 9, "fase": "b", "etichetta": "Ciclo 9 b) mestolo da B verso A", "A": {"bianco": 14.062643889494868, "rosso": 5.937356110505129}, "B": {"bianco": 5.93735611050513, "rosso": 14.062643889494868}}, {"ciclo": 10, "fase": "a", "etichetta": "Ciclo 10 a) mestolo da A verso B", "A": {"bianco": 13.359511695020124, "rosso": 5.640488304979872}, "B": {"bianco": 6.640488304979874, "rosso": 14.359511695020124}}, {"ciclo": 10, "fase": "b", "etichetta": "Ciclo 10 b) mestolo da B verso A", "A": {"bianco": 13.67572542382869, "rosso": 6.324274576171306}, "B": {"bianco": 6.324274576171308, "rosso": 13.67572542382869}}, {"ciclo": 11, "fase": "a", "etichetta": "Ciclo 11 a) mestolo da A verso B", "A": {"bianco": 12.991939152637254, "rosso": 6.00806084736274}, "B": {"bianco": 7.008060847362742, "rosso": 13.991939152637254}}, {"ciclo": 11, "fase": "b", "etichetta": "Ciclo 11 b) mestolo da B verso A", "A": {"bianco": 13.325656335845004, "rosso": 6.674343664154991}, "B": {"bianco": 6.674343664154993, "rosso": 13.325656335845004}}, {"ciclo": 12, "fase": "a", "etichetta": "Ciclo 12 a) mestolo da A verso B", "A": {"bianco": 12.659373519052753, "rosso": 6.3406264809472415}, "B": {"bianco": 7.340626480947243, "rosso": 13.659373519052753}}, {"ciclo": 12, "fase": "b", "etichetta": "Ciclo 12 b) mestolo da B verso A", "A": {"bianco": 13.008927161002623, "rosso": 6.991072838997373}, "B": {"bianco": 6.991072838997375, "rosso": 13.008927161002623}}, {"ciclo": 13, "fase": "a", "etichetta": "Ciclo 13 a) mestolo da A verso B", "A": {"bianco": 12.358480802952492, "rosso": 6.641519197047504}, "B": {"bianco": 7.641519197047506, "rosso": 13.358480802952492}}, {"ciclo": 13, "fase": "b", "etichetta": "Ciclo 13 b) mestolo da B verso A", "A": {"bianco": 12.722362669478564, "rosso": 7.277637330521433}, "B": {"bianco": 7.277637330521435, "rosso": 12.722362669478564}}, {"ciclo": 14, "fase": "a", "etichetta": "Ciclo 14 a) mestolo da A verso B", "A": {"bianco": 12.086244536004635, "rosso": 6.913755463995361}, "B": {"bianco": 7.913755463995363, "rosso": 13.086244536004635}}, {"ciclo": 14, "fase": "b", "etichetta": "Ciclo 14 b) mestolo da B verso A", "A": {"bianco": 12.46309003429013, "rosso": 7.536909965709868}, "B": {"bianco": 7.53690996570987, "rosso": 12.46309003429013}}, {"ciclo": 15, "fase": "a", "etichetta": "Ciclo 15 a) mestolo da A verso B", "A": {"bianco": 11.839935532575623, "rosso": 7.160064467424375}, "B": {"bianco": 8.160064467424377, "rosso": 12.839935532575623}}, {"ciclo": 15, "fase": "b", "etichetta": "Ciclo 15 b) mestolo da B verso A", "A": {"bianco": 12.228510031024403, "rosso": 7.771489968975595}, "B": {"bianco": 7.7714899689755965, "rosso": 12.228510031024403}}, {"ciclo": 16, "fase": "a", "etichetta": "Ciclo 16 a) mestolo da A verso B", "A": {"bianco": 11.617084529473182, "rosso": 7.3829154705268145}, "B": {"bianco": 8.382915470526816, "rosso": 12.617084529473182}}, {"ciclo": 16, "fase": "b", "etichetta": "Ciclo 16 b) mestolo da B verso A", "A": {"bianco": 12.01627098045065, "rosso": 7.983729019549347}, "B": {"bianco": 7.983729019549349, "rosso": 12.01627098045065}}, {"ciclo": 17, "fase": "a", "etichetta": "Ciclo 17 a) mestolo da A verso B", "A": {"bianco": 11.415457431428116, "rosso": 7.58454256857188}, "B": {"bianco": 8.584542568571882, "rosso": 12.415457431428116}}, {"ciclo": 17, "fase": "b", "etichetta": "Ciclo 17 b) mestolo da B verso A", "A": {"bianco": 11.824245172788682, "rosso": 8.175754827211314}, "B": {"bianco": 8.175754827211316, "rosso": 11.824245172788682}}, {"ciclo": 18, "fase": "a", "etichetta": "Ciclo 18 a) mestolo da A verso B", "A": {"bianco": 11.233032914149248, "rosso": 7.766967085850748}, "B": {"bianco": 8.76696708585075, "rosso": 12.233032914149248}}, {"ciclo": 18, "fase": "b", "etichetta": "Ciclo 18 b) mestolo da B verso A", "A": {"bianco": 11.650507537284998, "rosso": 8.349492462714998}, "B": {"bianco": 8.349492462715, "rosso": 11.650507537284998}}, {"ciclo": 19, "fase": "a", "etichetta": "Ciclo 19 a) mestolo da A verso B", "A": {"bianco": 11.067982160420748, "rosso": 7.932017839579249}, "B": {"bianco": 8.93201783957925, "rosso": 12.067982160420748}}, {"ciclo": 19, "fase": "b", "etichetta": "Ciclo 19 b) mestolo da B verso A", "A": {"bianco": 11.493316343257854, "rosso": 8.506683656742142}, "B": {"bianco": 8.506683656742144, "rosso": 11.493316343257854}}, {"ciclo": 20, "fase": "a", "etichetta": "Ciclo 20 a) mestolo da A verso B", "A": {"bianco": 10.918650526094961, "rosso": 8.081349473905036}, "B": {"bianco": 9.081349473905037, "rosso": 11.918650526094961}}, {"ciclo": 20, "fase": "b", "etichetta": "Ciclo 20 b) mestolo da B verso A", "A": {"bianco": 11.351095739138058, "rosso": 8.648904260861938}, "B": {"bianco": 8.64890426086194, "rosso": 11.351095739138058}}];
+var CAPIENZA = 20.0;
+
+function $(id){ return document.getElementById(id); }
+var idx = 0, timer = null;
+
+function fmt(v){ return v.toFixed(4).replace('.', ',') + ' L'; }
+
+function disegnaDamigiana(svg, bianco, rosso, etichetta){
+  var tot = bianco + rosso;
+  var fraz = tot > 0 ? bianco / tot : 0;
+  var cB = [232,217,160], cR = [123,18,48];
+  var mix = [0,1,2].map(function(i){ return Math.round(cR[i] + (cB[i]-cR[i]) * fraz); });
+  var colore = 'rgb(' + mix.join(',') + ')';
+
+  var pieno = Math.min(tot / CAPIENZA, 1.15);
+  var yBase = 225, hMax = 130;
+  var h = hMax * pieno;
+  var y = yBase - h;
+
+  svg.innerHTML =
+    '<defs><clipPath id="cp' + svg.id + '">' +
+    '<path d="M70,55 L70,95 Q40,115 40,160 L40,215 Q40,228 55,228 L145,228 Q160,228 160,215 L160,160 Q160,115 130,95 L130,55 Z"/>' +
+    '</clipPath></defs>' +
+    '<path d="M70,40 L70,95 Q40,115 40,160 L40,215 Q40,228 55,228 L145,228 Q160,228 160,215 L160,160 Q160,115 130,95 L130,40 Z" fill="rgba(255,255,255,.55)" stroke="#b9ae99" stroke-width="2"/>' +
+    '<g clip-path="url(#cp' + svg.id + ')">' +
+    '<rect x="30" y="' + y + '" width="140" height="' + (h+6) + '" fill="' + colore + '"/>' +
+    '<ellipse cx="100" cy="' + y + '" rx="70" ry="5" fill="' + colore + '" opacity=".75"/>' +
+    '</g>' +
+    '<path d="M78,60 L78,100 Q52,118 52,158 L52,210" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="4" stroke-linecap="round"/>' +
+    '<rect x="66" y="30" width="68" height="14" rx="4" fill="#8a7a5e"/>' +
+    '<text x="100" y="252" text-anchor="middle" font-family="Georgia,serif" font-size="14" fill="#2b2118">' + etichetta + '</text>';
+}
+
+function disegnaFreccia(fase){
+  var svg = $('freccia');
+  if (!fase || fase === 'iniziale'){ svg.innerHTML = ''; return; }
+  var destra = (fase === 'a');
+  var d = destra ? 'M20,120 L120,120' : 'M130,120 L30,120';
+  var punta = destra
+    ? '<polygon points="120,112 138,120 120,128" fill="#2b2118"/>'
+    : '<polygon points="30,112 12,120 30,128" fill="#2b2118"/>';
+  svg.innerHTML =
+    '<path d="' + d + '" stroke="#2b2118" stroke-width="2.5" stroke-dasharray="7 5">' +
+    '<animate attributeName="stroke-dashoffset" from="24" to="0" dur="0.6s" repeatCount="indefinite"/></path>' +
+    punta +
+    '<text x="75" y="104" text-anchor="middle" font-family="Georgia,serif" font-size="13" fill="#2b2118">1 mestolo</text>';
+}
+
+function mostra(i){
+  var s = STATI[i], A = s.A, B = s.B;
+  var tA = A.bianco + A.rosso, tB = B.bianco + B.rosso;
+
+  disegnaDamigiana($('damA'), A.bianco, A.rosso, 'Damigiana A');
+  disegnaDamigiana($('damB'), B.bianco, B.rosso, 'Damigiana B');
+  disegnaFreccia(s.fase);
+
+  $('stato').textContent = s.etichetta;
+  $('aB').textContent = fmt(A.bianco);
+  $('aR').textContent = fmt(A.rosso);
+  $('aT').textContent = fmt(tA);
+  $('bB').textContent = fmt(B.bianco);
+  $('bR').textContent = fmt(B.rosso);
+  $('bT').textContent = fmt(tB);
+
+  $('barAB').style.width = (A.bianco / tA * 100) + '%';
+  $('barAR').style.width = (A.rosso  / tA * 100) + '%';
+  $('barBB').style.width = (B.bianco / tB * 100) + '%';
+  $('barBR').style.width = (B.rosso  / tB * 100) + '%';
+
+  disegnaGrafico(i);
+}
+
+function disegnaGrafico(fino){
+  var cv = $('grafico'), ctx = cv.getContext('2d');
+  var W = cv.width, H = cv.height, mt = 22, mr = 22, mb = 30, ml = 46;
+  ctx.clearRect(0, 0, W, H);
+
+  var n = STATI.length - 1;
+  function px(i){ return ml + (W - ml - mr) * (i / n); }
+  function py(p){ return mt + (H - mt - mb) * (1 - p); }
+
+  ctx.strokeStyle = '#ece5d6'; ctx.lineWidth = 1;
+  ctx.font = '11px Georgia'; ctx.fillStyle = '#9c9384'; ctx.textAlign = 'right';
+  [0, .25, .5, .75, 1].forEach(function(p){
+    ctx.beginPath(); ctx.moveTo(ml, py(p)); ctx.lineTo(W - mr, py(p)); ctx.stroke();
+    ctx.fillText((p * 100) + '%', ml - 8, py(p) + 4);
+  });
+
+  ctx.strokeStyle = '#c4bba6'; ctx.setLineDash([4, 4]);
+  ctx.beginPath(); ctx.moveTo(ml, py(.5)); ctx.lineTo(W - mr, py(.5)); ctx.stroke();
+  ctx.setLineDash([]);
+
+  function traccia(chiave, colore){
+    ctx.strokeStyle = colore; ctx.lineWidth = 2; ctx.beginPath();
+    for (var i = 0; i <= fino; i++){
+      var d = STATI[i][chiave];
+      var p = d.bianco / (d.bianco + d.rosso);
+      if (i === 0) ctx.moveTo(px(i), py(p)); else ctx.lineTo(px(i), py(p));
+    }
+    ctx.stroke();
+    var d2 = STATI[fino][chiave];
+    var p2 = d2.bianco / (d2.bianco + d2.rosso);
+    ctx.fillStyle = colore;
+    ctx.beginPath(); ctx.arc(px(fino), py(p2), 4, 0, 6.284); ctx.fill();
+  }
+  traccia('A', '#b8860b');
+  traccia('B', '#7b1230');
+
+  ctx.textAlign = 'left'; ctx.font = '12px Georgia';
+  ctx.fillStyle = '#b8860b'; ctx.fillText('% bianco in A', ml + 6, mt + 14);
+  ctx.fillStyle = '#7b1230'; ctx.fillText('% bianco in B', ml + 110, mt + 14);
+}
+
+function ferma(){ if (timer){ clearInterval(timer); timer = null; } $('btnPlay').textContent = 'Avvia'; }
+function passo(){ if (idx < STATI.length - 1){ idx++; mostra(idx); } else ferma(); }
+function play(){
+  if (timer){ ferma(); return; }
+  if (idx >= STATI.length - 1){ idx = 0; mostra(0); }
+  $('btnPlay').textContent = 'Pausa';
+  var v = parseInt($('velocita').value) || 700;
+  timer = setInterval(passo, Math.max(80, v));
+}
+
+$('btnPlay').onclick = play;
+$('btnStep').onclick = function(){ ferma(); passo(); };
+$('btnReset').onclick = function(){ ferma(); idx = 0; mostra(0); };
+
+mostra(0);
+</script>
+
+
+</body></html>
